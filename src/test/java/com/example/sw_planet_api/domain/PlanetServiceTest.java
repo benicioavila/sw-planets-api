@@ -10,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
+
 import static com.example.sw_planet_api.common.PlanetConstants.PLANET;
+import static com.example.sw_planet_api.common.PlanetConstants.INVALID_PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +46,13 @@ public class PlanetServiceTest {
 
 
 
+    }
+
+    @Test
+    public void createPlanet_WithInvalidData_ThrowsException(){
+        when(planetRepository.save(INVALID_PLANET)).thenThrow(RuntimeException.class);
+        assertThatThrownBy(() -> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
+        
     }
     
 }
