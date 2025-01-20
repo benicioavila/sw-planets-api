@@ -16,7 +16,9 @@ import static com.example.sw_planet_api.common.PlanetConstants.PLANET;
 import static com.example.sw_planet_api.common.PlanetConstants.INVALID_PLANET;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.when;;
+import static org.mockito.Mockito.when;
+
+import java.util.Optional;;
 
 @ExtendWith(MockitoExtension.class)
 //@SpringBootTest(classes = PlanetService.class)
@@ -54,5 +56,53 @@ public class PlanetServiceTest {
         assertThatThrownBy(() -> planetService.create(INVALID_PLANET)).isInstanceOf(RuntimeException.class);
         
     }
+
+    @Test
+    public void getPlanet_ByExistingId_ReturnsPlanet(){
+        when(planetRepository.findById(1L)).thenReturn(Optional.of(PLANET));
+        
+        Optional<Planet> sut = planetService.get(1L);
+
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PLANET);
+
+        
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingId_ReturnsEmpty(){
+        when(planetRepository.findById(1L)).thenReturn(Optional.empty());        
+        
+        Optional<Planet> sut = planetService.get(1L);
+        
+        assertThat(sut).isEmpty();        
+        
+    }
+
+
+    @Test
+    public void getPlanet_ByExistingName_ReturnsPlanet(){
+        when(planetRepository.findByName(PLANET.getName())).thenReturn(Optional.of(PLANET));
+        
+        Optional<Planet> sut = planetService.getByName(PLANET.getName());
+
+        assertThat(sut).isNotEmpty();
+        assertThat(sut.get()).isEqualTo(PLANET);
+
+        
+    }
+
+    @Test
+    public void getPlanet_ByUnexistingName_ReturnsEmpty(){
+        when(planetRepository.findByName("UNEXISTING NAME")).thenReturn(Optional.empty());        
+        
+        Optional<Planet> sut = planetService.getByName(PLANET.getName());
+        
+        assertThat(sut).isEmpty();        
+        
+    }
+
+
+
     
 }
